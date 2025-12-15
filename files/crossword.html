@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кроссворд Digital Bridge</title>
+    <style>
+        :root {
+            --primary-color: #0f4c81; /* Темно-синий из логотипа */
+            --accent-color: #00bcd4;  /* Голубой "цифровой" цвет */
+            --bg-color: #f0f4f8;
+            --cell-size: 40px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            margin: 0;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin: 0;
+            font-size: 2.5em;
+        }
+
+        p.subtitle {
+            color: #666;
+            font-size: 1.1em;
+            margin-top: 10px;
+        }
+
+        .container {
+            display: flex;
+            gap: 40px;
+            flex-wrap: wrap;
+            justify-content: center;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .crossword-grid {
+            display: grid;
+            grid-template-columns: repeat(15, var(--cell-size));
+            grid-template-rows: repeat(12, var(--cell-size));
+            gap: 2px;
+            background-color: transparent;
+        }
+
+        .cell {
+            width: var(--cell-size);
+            height: var(--cell-size);
+            background-color: transparent;
+            border: 1px solid transparent;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .cell.active {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .cell input {
+            width: 100%;
+            height: 100%;
+            border: none;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+            background: transparent;
+            color: var(--primary-color);
+            outline: none;
+            padding: 0;
+        }
+
+        .cell input:focus {
+            background-color: #e3f2fd;
+        }
+
+        .cell .number {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            font-size: 10px;
+            color: #999;
+            pointer-events: none;
+        }
+
+        .clues-container {
+            max-width: 300px;
+        }
+
+        .clues-box {
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 5px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 12px;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 5px;
+            transition: background 0.2s;
+            font-size: 0.95em;
+            line-height: 1.4;
+        }
+
+        li:hover {
+            background-color: #e3f2fd;
+        }
+
+        li span.word-id {
+            font-weight: bold;
+            color: var(--accent-color);
+            margin-right: 5px;
+        }
+
+        .controls {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        button {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            font-size: 1em;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: bold;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 188, 212, 0.4);
+        }
+
+        /* Success Message */
+        #success-msg {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #d4edda;
+            color: #155724;
+            border-radius: 10px;
+            text-align: center;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Digital Bridge School</h1>
+    <p class="subtitle">Интерактивный кроссворд по материалам презентации</p>
+</header>
+
+<div class="container">
+    <div class="crossword-grid" id="grid">
+        </div>
+
+    <div class="clues-container">
+        <div class="clues-box">
+            <h3>По горизонтали</h3>
+            <ul id="across-clues">
+                </ul>
+        </div>
+        <div class="clues-box">
+            <h3>По вертикали</h3>
+            <ul id="down-clues">
+                </ul>
+        </div>
+        
+        <div class="controls">
+            <button onclick="checkAnswers()">Проверить ответы</button>
+        </div>
+        <div id="success-msg">🎉 Поздравляем! Вы отлично знаете нашу школу!</div>
+    </div>
+</div>
+
+<script>
+    // Data derived from the "Digital Bridge" PDF
+    const crosswordData = [
+        {
+            word: "РОБОТОТЕХНИКА",
+            clue: "Дисциплина, где используют конструкторы LEGO WeDo 2.0 [стр. 3]",
+            x: 1, y: 3, dir: "across", number: 1
+        },
+        {
+            word: "СКРЕТЧ",
+            clue: "Визуальная среда программирования для 3-4 классов [стр. 4]",
+            x: 8, y: 5, dir: "across", number: 4
+        },
+        {
+            word: "ЛИДЕР",
+            clue: "Тот, кого школа стремится воспитать согласно своей миссии [стр. 2]",
+            x: 3, y: 4, dir: "across", number: 5
+        },
+        {
+            word: "БИБЛИОТЕКА",
+            clue: "Место в школе, где есть книги на английском и китайском языках [стр. 3]",
+            x: 3, y: 1, dir: "down", number: 2
+        },
+        {
+            word: "КИТАЙСКИЙ",
+            clue: "Второй иностранный язык, который изучают 3-4 раза в неделю [стр. 5]",
+            x: 12, y: 3, dir: "down", number: 3
+        }
+    ];
+
+    const gridSize = { cols: 15, rows: 12 };
+    const gridEl = document.getElementById('grid');
+
+    // Initialize Grid
+    function initGrid() {
+        for (let i = 0; i < gridSize.rows * gridSize.cols; i++) {
+            const cell = document.createElement('div');
+            cell.classList.add('cell');
+            cell.dataset.index = i;
+            gridEl.appendChild(cell);
+        }
+
+        crosswordData.forEach(item => {
+            placeWord(item);
+            addClue(item);
+        });
+    }
+
+    function placeWord(item) {
+        let currentX = item.x;
+        let currentY = item.y;
+
+        for (let i = 0; i < item.word.length; i++) {
+            const index = currentY * gridSize.cols + currentX;
+            const cell = gridEl.children[index];
+            
+            cell.classList.add('active');
+            
+            // Add number if it's the first letter
+            if (i === 0) {
+                const numSpan = document.createElement('span');
+                numSpan.classList.add('number');
+                numSpan.innerText = item.number;
+                cell.appendChild(numSpan);
+            }
+
+            // Create input if not exists
+            if (!cell.querySelector('input')) {
+                const input = document.createElement('input');
+                input.maxLength = 1;
+                input.dataset.x = currentX;
+                input.dataset.y = currentY;
+                
+                // Navigation logic
+                input.addEventListener('keyup', (e) => handleInput(e, input, item.dir));
+                
+                cell.appendChild(input);
+            }
+            
+            // Store correct answer in dataset
+            const input = cell.querySelector('input');
+            // Check if multiple words cross here, careful not to overwrite if logic was complex, 
+            // but for validation we just need the letter for THAT cell.
+            input.dataset.letter = item.word[i]; 
+
+            if (item.dir === "across") currentX++;
+            else currentY++;
+        }
+    }
+
+    function addClue(item) {
+        const li = document.createElement('li');
+        li.innerHTML = `<span class="word-id">${item.number}.</span> ${item.clue}`;
+        li.onclick = () => focusWord(item);
+        
+        if (item.dir === "across") {
+            document.getElementById('across-clues').appendChild(li);
+        } else {
+            document.getElementById('down-clues').appendChild(li);
+        }
+    }
+
+    function handleInput(e, input, dir) {
+        // Simple navigation
+        const x = parseInt(input.dataset.x);
+        const y = parseInt(input.dataset.y);
+        let nextInput;
+
+        if (e.key.length === 1 && e.key.match(/[а-яА-Яa-zA-Z]/)) {
+            // Move to next cell
+             // Logic simplified for demo: try to find next cell in dominant direction
+             // For a robust implementation, we'd track active word context.
+             // Here we just look neighbor right or down.
+             let nextIndex = (dir === 'across') ? y * gridSize.cols + (x + 1) : (y + 1) * gridSize.cols + x;
+             let nextCell = gridEl.children[nextIndex];
+             if(nextCell && nextCell.querySelector('input')) nextCell.querySelector('input').focus();
+        } else if (e.key === "Backspace") {
+             // Move back
+             let prevIndex = (dir === 'across') ? y * gridSize.cols + (x - 1) : (y - 1) * gridSize.cols + x;
+             let prevCell = gridEl.children[prevIndex];
+             if(prevCell && prevCell.querySelector('input')) prevCell.querySelector('input').focus();
+        }
+    }
+
+    function focusWord(item) {
+        const index = item.y * gridSize.cols + item.x;
+        const cell = gridEl.children[index];
+        const input = cell.querySelector('input');
+        if (input) input.focus();
+    }
+
+    function checkAnswers() {
+        const inputs = document.querySelectorAll('.cell input');
+        let allCorrect = true;
+        
+        inputs.forEach(input => {
+            if (input.value.toUpperCase() === input.dataset.letter) {
+                input.style.color = "#155724"; // Green
+                input.style.fontWeight = "bold";
+                input.parentElement.style.backgroundColor = "#d4edda";
+            } else {
+                input.style.color = "red";
+                allCorrect = false;
+            }
+        });
+
+        if (allCorrect) {
+            document.getElementById('success-msg').style.display = 'block';
+        }
+    }
+
+    initGrid();
+</script>
+
+</body>
+</html>
