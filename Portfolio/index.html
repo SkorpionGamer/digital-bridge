@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Портфолио | Digital Bridge Style</title>
+    <style>
+        :root {
+            --primary: #0f4c81;     /* Темно-синий */
+            --primary-dark: #0a355c;
+            --accent: #00bcd4;      /* Голубой */
+            --bg: #fdfcf8;          /* Светло-бежевый, чище */
+            --white: #ffffff;
+            --text: #2c3e50;
+            --card-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            --card-hover: 0 15px 30px rgba(15, 76, 129, 0.15);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            /* Фон: более аккуратная сетка */
+            background-image: 
+                linear-gradient(rgba(15, 76, 129, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(15, 76, 129, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        /* --- HEADER & NAV --- */
+        header {
+            background: transparent;
+        }
+
+        .sticky-nav-wrapper {
+            background: rgba(15, 76, 129, 0.95); /* Полупрозрачный */
+            backdrop-filter: blur(10px); /* Эффект размытия */
+            color: var(--white);
+            padding: 0.8rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+        }
+
+        .nav-links a {
+            color: rgba(255,255,255,0.9);
+            text-decoration: none;
+            margin-left: 25px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        /* Подчеркивание при наведении */
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: var(--accent);
+            transition: width 0.3s;
+        }
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        /* --- BANNER FIXED --- */
+        .top-banner {
+            width: 100%;
+            background-color: var(--white);
+            /* Убрали любые ограничения высоты */
+            height: auto;
+            min-height: auto;
+            border-bottom: 5px solid var(--accent);
+            line-height: 0;
+            margin-bottom: 50px;
+            overflow: visible; /* Разрешаем показывать всё */
+        }
+        
+        .top-banner img {
+            width: 100%;      
+            height: auto;     /* Высота авто — пропорции сохраняются */
+            display: block;   
+            object-fit: contain; /* Гарантирует, что картинка влезет */
+        }
+
+        /* --- SECTIONS --- */
+        section {
+            padding: 20px 0 60px 0;
+        }
+
+        h2.section-title {
+            color: var(--primary);
+            border-left: 6px solid var(--accent);
+            padding-left: 20px;
+            margin-bottom: 40px;
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        
+        h3.gallery-title {
+            color: var(--primary);
+            margin-top: 60px;
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+            border-bottom: 3px solid var(--accent);
+            display: inline-block;
+            padding-bottom: 8px;
+        }
+
+        /* --- CARDS & GRIDS --- */
+        .works-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); 
+            gap: 30px;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 12px; /* Более круглые углы */
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border: 1px solid rgba(0,0,0,0.03);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--card-hover);
+            border-color: rgba(0, 188, 212, 0.2);
+        }
+
+        .card h3 {
+            margin-top: 5px;
+            font-size: 1.25rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .card p {
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+        }
+
+        .gallery-preview {
+            width: 100%;
+            height: 400px;          
+            object-fit: contain;    
+            background-color: #f4f6f8;
+            border-radius: 8px;
+            border: 1px solid #eee;
+            margin-bottom: 15px;
+        }
+
+        .file-type {
+            display: inline-block;
+            padding: 6px 12px;
+            background: #eef5fa;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 15px;
+            align-self: flex-start;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-download {
+            display: inline-block;
+            padding: 12px 25px;
+            background: var(--primary);
+            color: var(--white);
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(15, 76, 129, 0.2);
+        }
+
+        .btn-download:hover {
+            background-color: var(--accent);
+            box-shadow: 0 6px 15px rgba(0, 188, 212, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* --- EMBED AREAS --- */
+        .embed-container {
+            background: var(--white);
+            padding: 10px;
+            border-radius: 12px;
+            margin-top: 20px;
+            border: 1px solid #e0e0e0;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.03);
+            text-align: center;
+            overflow: hidden;
+        }
+        
+        iframe {
+            max-width: 100%;
+            border: none;
+            border-radius: 8px;
+        }
+
+        /* --- ACHIEVEMENTS (EMPTY AS REQUESTED) --- */
+        .achievements-grid {
+            /* Оставляем сетку, но она будет пустой */
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            min-height: 50px; /* Чтобы секция не схлопнулась полностью, если там пусто */
+        }
+        
+        .empty-message {
+            color: #999;
+            font-style: italic;
+        }
+
+        /* --- LINKS --- */
+        .links-list {
+            list-style: none;
+            padding: 0;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .links-list li {
+            background: var(--white);
+            padding: 25px;
+            border-left: 5px solid var(--accent);
+            border-radius: 0 10px 10px 0;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s;
+        }
+        
+        .links-list li:hover {
+            transform: translateX(10px);
+        }
+
+        .links-list a {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 1.3rem;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .links-list p {
+            margin: 0;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background: var(--primary);
+            color: var(--white);
+            text-align: center;
+            padding: 40px 20px;
+            margin-top: 80px;
+            font-size: 0.9rem;
+            border-top: 5px solid var(--accent);
+        }
+
+        /* Адаптив для телефонов */
+        @media (max-width: 768px) {
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+            .gallery-preview {
+                height: auto;
+                max-height: 400px;
+            }
+            .nav-links {
+                display: none; /* Для простоты на мобильном скрываем ссылки, или можно сделать бургер */
+            }
+            .logo {
+                font-size: 1.2rem;
+            }
+            .container {
+                padding: 0 15px;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="sticky-nav-wrapper">
+            <div class="container">
+                <nav>
+                    <div class="logo">🌐 Digital Bridge School</div>
+                    <div class="nav-links">
+                        <a href="#works">Мои работы</a>
+                        <a href="#achievements">Достижения</a>
+                        <a href="#links">Ссылки</a>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        
+        <div class="top-banner">
+            <img src="files/header_banner.png" alt="Портфолио основателя частной школы">
+        </div>
+    </header>
+
+    <div class="container">
+        
+        <section id="works">
+            <h2 class="section-title">Мои работы</h2>
+            
+            <div class="works-grid">
+                
+                <div class="card">
+                    <span class="file-type">📂 Проект + Презентация</span>
+                    <h3>Проект «Частная школа»</h3>
+                    <p>Концепция школы Digital Bridge: миссия, структура, планы.</p>
+                    <a href="files/digitalbridge.pdf" class="btn-download" download>⬇ Скачать</a>
+                </div>
+
+                <div class="card">
+                    <span class="file-type">Презентация</span>
+                    <h3>Презентация выступления WS Russia</h3>
+                    <p>Презентация с выступлением на конкурсе «Мое педагогическое кредо».</p>
+                    <a href="files/WSRussia.pdf" class="btn-download" download>⬇ Скачать</a>
+                </div>
+
+                <div class="card">
+                    <span class="file-type">🖱 Интерактив</span>
+                    <h3>Интерактивная презентация</h3>
+                    <p>Тест с гиперссылками и навигацией по слайдам.</p>
+                    <a href="files/interactive.pptx" class="btn-download" download>⬇ Скачать</a>
+                </div>
+
+                <div class="card">
+                    <span class="file-type">📝 Документ Word</span>
+                    <h3>Методики начальной школы</h3>
+                    <p>Сложное форматирование: сноски, колонтитулы, подписи к рисункам.</p>
+                    <a href="files/methods.docx" class="btn-download" download>⬇ Скачать DOCX</a>
+                </div>
+
+                <div class="card">
+                    <span class="file-type">📊 Excel Таблица</span>
+                    <h3>Ведомость посещаемости</h3>
+                    <p>Создание электронных таблиц и математическая обработка данных.</p>
+                    <a href="files/attendance.xlsx" class="btn-download" download>⬇ Скачать XLSX</a>
+                </div>
+
+                <div class="card">
+                    <span class="file-type">📊 Excel Таблица</span>
+                    <h3>Электронный журнал успеваемости</h3>
+                    <p>Построение графиков и диаграмм по результатам табличных расчетов.</p>
+                    <a href="files/grades.xlsx" class="btn-download" download>⬇ Скачать XLSX</a>
+                </div>
+
+                <div class="card">
+                    <span class="file-type">📊 Таблица</span>
+                    <h3>База Данных</h3>
+                    <p>Создание базы данных. Применение форм, запросов отчетов.</p>
+                    <a href="files/baza.xlsx" class="btn-download" download>⬇ Скачать XLSX</a>
+                </div>
+            </div>
+
+            <h3 class="gallery-title">🎨 Творческая галерея</h3>
+            
+            <div class="gallery-grid">
+                <div class="card">
+                    <span class="file-type">🛡️ Изображение</span>
+                    <h3>Герб класса</h3>
+                    <p>Символика нашего класса, созданная в графическом редакторе.</p>
+                    <img src="files/gerb.jpg" alt="Герб класса" class="gallery-preview">
+                    <a href="files/gerb.jpg" class="btn-download" download>🖼 Скачать оригинал</a>
+                </div>
+
+                <div class="card">
+                    <span class="file-type">🖼️ Фотоколлаж</span>
+                    <h3>Коллаж</h3>
+                    <p>Творческая композиция из фотографий и графических элементов.</p>
+                    <img src="files/collage.jpg" alt="Коллаж" class="gallery-preview">
+                    <a href="files/collage.jpg" class="btn-download" download>🖼 Скачать оригинал</a>
+                </div>
+
+                <div class="card">
+                    <span class="file-type">📢 Постер</span>
+                    <h3>Объявление</h3>
+                    <p>Афиша праздничного мероприятия.</p>
+                    <img src="files/unnamed1.jpg" alt="Объявление" class="gallery-preview">
+                    <a href="files/unnamed1.jpg" class="btn-download" download>🖼 Скачать оригинал</a>
+                </div>
+
+                <div class="card">
+                    <span class="file-type">📢 Диплом</span>
+                    <h3>Диплом</h3>
+                    <p>Дизайн наградного материала.</p>
+                    <img src="files/unnamed2.jpg" alt="Диплом" class="gallery-preview">
+                    <a href="files/unnamed2.jpg" class="btn-download" download>🖼 Скачать оригинал</a>
+                </div>
+
+                <div class="card">
+                    <span class="file-type">📢 Грамота</span>
+                    <h3>Грамота</h3>
+                    <p>Дизайн наградного материала.</p>
+                    <img src="files/unnamed3.jpg" alt="Грамота" class="gallery-preview">
+                    <a href="files/unnamed3.jpg" class="btn-download" download>🖼 Скачать оригинал</a>
+                </div>
+
+                <div class="card">
+                    <span class="file-type">✉️ Открытка</span>
+                    <h3>Приглашение</h3>
+                    <p>Дизайн пригласительного для родителей.</p>
+                    <img src="files/unnamed4.jpg" alt="Приглашение" class="gallery-preview">
+                    <a href="files/unnamed4.jpg" class="btn-download" download>🖼 Скачать оригинал</a>
+                </div>
+            </div>
+
+
+            <br><br>
+            <h3>🌐 Интерактивные задания</h3>
+            
+            <div class="card" style="width: 100%; max-width: 100%; box-sizing: border-box;">
+                <span class="file-type">🧩 LearningApps.org</span>
+                <h3>Мое интерактивное задание</h3>
+                <p>Выполните задание прямо на сайте:</p>
+                <div class="embed-container">
+                    <iframe src="https://learningapps.org/watch?v=pez8n2n4j25" style="border:0px;width:100%;height:500px" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
+                    <p><i></i></p>
+                </div>
+            </div>
+
+            <div class="card" style="width: 100%; max-width: 100%; box-sizing: border-box; margin-top: 20px;">
+                <span class="file-type">🧩 HTML Кроссворд</span>
+                <h3>Мой авторский кроссворд</h3>
+                <p>Проверьте свои знания, решив кроссворд прямо на странице:</p>
+                
+                <div class="embed-container" style="padding: 0; overflow: hidden;">
+                    <iframe 
+                        src="files/crossword.html" 
+                        style="width: 100%; height: 600px; border: none;" 
+                        title="Кроссворд">
+                    </iframe>
+                </div>
+                
+                <div style="text-align: center; margin-top: 20px;">
+                    <a href="files/crossword.html" target="_blank" class="btn-download">↗ Открыть в новом окне</a>
+                </div>
+            </div>
+
+            <br>
+            <h3>📚 Публикации на Calameo</h3>
+            <div class="works-grid">
+                
+                <div class="card" style="grid-column: span 2;">
+                    <span class="file-type">Способ 2: Вставка на сайт</span>
+                    <h3>Частная школа «Digital Bridge»</h3>
+                    <div class="embed-container" style="height: 800px;">
+                        <iframe 
+                            src="https://v.calameo.com/?bkcode=00811604762a49765c421" 
+                            width="100%" 
+                            height="100%" 
+                            frameborder="0" 
+                            scrolling="no" 
+                            allowtransparency 
+                            allowfullscreen 
+                            style="margin:0 auto;">
+                        </iframe>
+                    </div>
+                </div>
+
+                <div class="card" style="grid-column: span 2;">
+                    <span class="file-type">Дополнительная публикация</span>
+                    <h3>Old Fairytale</h3>
+                    <div class="embed-container" style="height: 600px;">
+                        <iframe 
+                            src="https://v.calameo.com/?bkcode=00811604778557c6640a3" 
+                            width="100%" 
+                            height="100%" 
+                            frameborder="0" 
+                            scrolling="no" 
+                            allowtransparency 
+                            allowfullscreen 
+                            style="margin:0 auto;">
+                        </iframe>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+        <section id="achievements">
+            <h2 class="section-title">Мои достижения</h2>
+            <div class="achievements-grid">
+               <p class="empty-message"></p>
+            </div>
+        </section>
+
+        <section id="links">
+            <h2 class="section-title">Подготовка к олимпиадам (Полезные ссылки)</h2>
+            <ul class="links-list">
+                <li>
+                    <a href="https://logiclike.com/" target="_blank">LogicLike.com</a>
+                    <p>Интерактивная образовательная платформа. Содержит более 3500 логических задач.</p>
+                </li>
+                <li>
+                    <a href="https://metaschool.ru/" target="_blank">МетаШкола (MetaSchool)</a>
+                    <p>Интернет-кружки и олимпиады для школьников. Публикует архивы задач прошлых лет.</p>
+                </li>
+                <li>
+                    <a href="https://uchi.ru/olympiads" target="_blank">Учи.ру: Олимпиады</a>
+                    <p>Специальный раздел платформы «Учи.ру» с задачами прошедших олимпиад.</p>
+                </li>
+                <li>
+                    <a href="https://learningapps.org/" target="_blank">LearningApps.org</a>
+                    <p>Конструктор интерактивных заданий, кроссвордов и викторин.</p>
+                </li>
+            </ul>
+        </section>
+
+    </div>
+
+
+    <style>
+        .easter-egg-wrapper {
+            margin: 80px auto 40px auto; 
+            max-width: 800px; 
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            border-radius: 20px;
+            padding: 4px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .easter-egg-header {
+            background: #fff;
+            padding: 20px;
+            border-radius: 16px; /* Изначально закруглены все углы */
+            cursor: pointer;     /* Курсор-рука */
+            position: relative;
+            transition: border-radius 0.3s; /* Плавное изменение углов */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Когда открыто, нижние углы заголовка становятся прямыми */
+        .easter-egg-header.active {
+            border-radius: 16px 16px 0 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .easter-egg-title {
+            margin: 0; 
+            color: #d63031; 
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        /* Стрелочка */
+        .arrow-icon {
+            font-size: 1.2rem;
+            transition: transform 0.4s ease;
+            color: #2a5298;
+        }
+
+        /* Поворот стрелочки при открытии */
+        .easter-egg-header.active .arrow-icon {
+            transform: rotate(180deg);
+        }
+
+        /* Контейнер с игрой (Скрыт по умолчанию) */
+        .game-dropdown {
+            background: #fff;
+            max-height: 0;       /* Высота 0 - скрыто */
+            overflow: hidden;    /* Всё что не влезает - обрезается */
+            transition: max-height 0.8s cubic-bezier(0.4, 0, 0.2, 1); /* Очень плавная анимация */
+            border-radius: 0 0 16px 16px;
+        }
+
+        /* Класс для открытия */
+        .game-dropdown.open {
+            max-height: 600px; /* Достаточная высота, чтобы игра влезла */
+        }
+    </style>
+
+    <div class="easter-egg-wrapper">
+        
+        <div class="easter-egg-header" onclick="toggleEasterEgg(this)">
+            <div>
+                <h3 class="easter-egg-title">🎄 Секретный уровень: Новогодняя Змейка 🎁</h3>
+                <p style="margin: 5px 0 0 0; color: #636e72; font-size: 0.9rem;">
+                    Нажми, чтобы развернуть игру
+                </p>
+            </div>
+            <div class="arrow-icon">▼</div>
+        </div>
+        
+        <div class="game-dropdown" id="secretGameArea">
+            <iframe 
+                src="snake_newyear.html" 
+                width="100%" 
+                height="480px" 
+                frameborder="0" 
+                style="display: block; border: none;">
+            </iframe>
+        </div>
+
+    </div>
+
+    <script>
+        function toggleEasterEgg(headerElement) {
+            // Находим блок с игрой
+            const gameArea = document.getElementById('secretGameArea');
+            
+            // Добавляем/убираем классы активности
+            gameArea.classList.toggle('open');
+            headerElement.classList.toggle('active');
+        }
+    </script>
+
+    <footer>
+        <p>© 2024 Digital Bridge Portfolio. Все права защищены. Но это не точно.</p>
+        <p>Создано в рамках курса по информационным технологиям.</p>
+    </footer>
+
+</body>
+</html>
